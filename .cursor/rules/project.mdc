@@ -1,0 +1,38 @@
+---
+description: Project-specific architecture and decisions (Tech Lead fills in during Sprint 0)
+alwaysApply: true
+---
+# Project rules: SwarnaSetu
+> Source: architecture diagram approved in chat, plus the FastAPI + React Native setup. Update in the same PR as any architecture change.
+## Architecture
+- Style: monolith. One API serves the mobile client.
+- Communication: REST. No async broker in this setup.
+- Flow: mobile client → FastAPI (authentication, validation, business logic) → GST, HUID, and Interest modules → PostgreSQL
+## Frontend decisions
+- Framework: React Native (TypeScript) for iOS and Android. The reference diagram also listed React / Next.js or Flutter; this repo uses React Native.
+- Theme: white background (`#FFFFFF`) and blue primary (`#1565C0`). Do not follow the device dark theme.
+- State/data: local component state until a data layer is chosen
+- Folder structure: `SwarnaSetu-mobileapp/` with `ios/` and `android/` runners. API repo: `SwarnaSetu-backend/`
+## Backend decisions
+- Framework: FastAPI
+- Responsibilities: authentication, validation, business logic
+- Modules:
+  - GST Module: GSP API
+  - HUID Module: BIS authorised integration
+  - Interest Module: Python calculations
+- Database: PostgreSQL through SQLAlchemy 2 and Alembic. URL: `APP_DATABASE_URL`. Records: users, password reset codes, and later GST history, HUID history, interest calculations
+- Auth: public routes `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/google`
+- Accounts: email or phone, at least one, plus a password. Google sign-in uses a verified email and can create an account with no password
+- Tokens: HMAC access token for 15 minutes and refresh token for 7 days, kept in app memory
+- Password reset: one 6-digit OTP sent to every contact on the account, hashed, expires in 10 minutes. Reset also requires the current password
+- Google: `google-auth` checks the ID token against `APP_GOOGLE_CLIENT_IDS`. The app uses `@react-native-google-signin/google-signin`. Client IDs stay in configuration
+- Error format: `{ code, message, details }`
+- Settings: environment variables via pydantic-settings (`APP_NAME`, `ENVIRONMENT`, `LOG_LEVEL`, `APP_DATABASE_URL`, `APP_TOKEN_SECRET`, SMTP, SMS, `APP_GOOGLE_CLIENT_IDS`)
+- Current code: health check and account auth. GST, HUID, and Interest are not built yet.
+## Domain language
+- GST: module that integrates with a GSP API
+- HUID: module for a BIS authorised integration
+- Interest: calculations implemented in Python
+## Do not
+- Do not add GST, HUID, or Interest endpoints until that slice has an approved contract
+- Do not hard-code secrets, GSP credentials, or BIS credentials, and do not use real customer data

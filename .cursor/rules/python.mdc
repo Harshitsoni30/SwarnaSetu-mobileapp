@@ -1,0 +1,15 @@
+---
+description: Valere Python backend / scripting standards
+globs: **/*.py
+alwaysApply: false
+---
+# Python rules
+- Python 3.11+, type hints on all functions; pass `ruff` and `mypy` (or the project's configured linters).
+- FastAPI / Django per `project.mdc`; Pydantic models for every request and response.
+- Business logic in service modules, not in route handlers.
+- Settings via pydantic-settings / environment variables; never hard-code config.
+- Use the ORM or parameterised queries only.
+- Logging with the standard `logging` module in JSON format; no `print` in application code.
+- Tests with pytest; fixtures for setup; fake data only.
+
+

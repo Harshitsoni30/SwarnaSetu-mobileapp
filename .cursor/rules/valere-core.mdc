@@ -1,0 +1,29 @@
+---
+description: Valere core engineering rules for every repository (VAL-COE-01, 02, 06)
+alwaysApply: true
+---
+# Valere core rules
+## How to work
+- Plan before code: for any change touching more than one file, first list the files to change, the approach, risks and test cases, then wait for approval.
+- Work in small steps. After each step, stop and summarise what changed.
+- Prefer existing code, helpers and patterns in this repo over new ones. Search before creating.
+- Do not add new libraries unless the user explicitly asks. If one is needed, name it, explain why, and confirm it is widely used and maintained.
+- If something is unclear or you are unsure, say so and ask. Never invent APIs, fields, env variables or business rules.
+## Code quality
+- Follow the stack rule and `project.mdc` for structure and naming.
+- Small functions with clear names; no dead code, commented-out code, console logs or TODOs without a ticket ID.
+- Handle errors explicitly; never swallow exceptions silently.
+- Validate all external input (request bodies, query params, files, webhooks).
+- Every new function with logic gets unit tests that cover the acceptance criteria and edge cases.
+## Security (never break these)
+- Never read, print, log, hard-code or commit secrets, tokens, passwords, keys or `.env` values. Use environment variables and the existing config module.
+- Never use real customer or production data in code, tests or examples; use fake data.
+- Never run commands that touch databases, cloud accounts, deployments, or that delete files, unless the user types the exact command.
+- Use parameterised queries / ORM methods; never build SQL with string concatenation.
+- Enforce authentication and authorisation checks on every new endpoint.
+## Git
+- Commit messages: Conventional Commits `type(scope): summary [TICKET]`, types feat, fix, refactor, perf, test, docs, chore, ci.
+- Branches: `feature/VAL-123-short-desc`, `bugfix/...`, `hotfix/...`, lowercase with hyphens.
+- Never suggest force-pushing to develop, release/* or main.
+
+

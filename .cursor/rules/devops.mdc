@@ -1,0 +1,16 @@
+---
+description: Valere GitHub Actions and CI/CD standards (VAL-COE-01)
+globs: .github/**/*.yml,.github/**/*.yaml,**/Dockerfile,**/docker-compose*.yml
+alwaysApply: false
+---
+# DevOps / GitHub Actions rules
+- Workflow names and files follow VAL-COE-01: `ci.yml`, `deploy-dev.yml`, `deploy-staging.yml`, `deploy-prod.yml`, `iac.yml`, `security-nightly.yml`, `cursor-guard.yml`.
+- AWS access only through GitHub OIDC (`aws-actions/configure-aws-credentials` with `role-to-assume`); never add AWS access keys.
+- Pin every third-party action to a full commit SHA, with the version in a comment.
+- Secrets only from GitHub Environments (`${{ secrets.X }}`); never echo secrets.
+- Build the Docker image once, tag with the commit SHA, push to ECR, promote the same image.
+- Production deploys run only from `v*` tags with the `production` environment (required reviewers).
+- Dockerfiles: multi-stage, pinned base image versions, non-root user, no secrets in layers.
+- Set `permissions:` to the minimum each job needs.
+
+

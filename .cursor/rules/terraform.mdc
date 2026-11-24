@@ -1,0 +1,17 @@
+---
+description: Valere Terraform / AWS standards (VAL-COE-03)
+globs: **/*.tf,**/*.tfvars.example
+alwaysApply: false
+---
+# Terraform / AWS rules
+- Use shared Valere modules where they exist; do not write raw resources that a module already covers.
+- Naming: `<client>-<env>-<service>`. Tags on every resource: `Project`, `Environment`, `Owner`, `CostCenter` (use `default_tags` in the provider).
+- Network: ALB is the only public component. Services and databases in private subnets, no public IPs. No `0.0.0.0/0` ingress except 80/443 on the ALB.
+- Encryption at rest with KMS for RDS/Aurora, S3, EBS, SQS; TLS in transit.
+- S3: block public access, versioning on, lifecycle rules.
+- IAM: least privilege, no `*` actions on `*` resources; explain every policy in a comment.
+- PROD databases: Multi-AZ, deletion protection, backups 35 days.
+- Remote state in S3 with locking; never output secrets.
+- You may suggest `terraform fmt` and `terraform validate`. Never run `plan`, `apply`, `destroy` or `import`; those run only in the pipeline.
+
+
