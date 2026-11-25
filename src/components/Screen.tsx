@@ -48,17 +48,25 @@ type ButtonProps = {
   onPress: () => void;
   disabled?: boolean;
   testID?: string;
+  showArrow?: boolean;
 };
 
-export function PrimaryButton({ label, onPress, disabled = false, testID = 'primary-action' }: ButtonProps) {
+export function PrimaryButton({
+  label,
+  onPress,
+  disabled = false,
+  testID = 'primary-action',
+  showArrow = false,
+}: ButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
-      style={styles.primaryButton}
+      style={[styles.primaryButton, disabled ? styles.primaryButtonDisabled : null]}
       testID={testID}>
       <Text style={styles.primaryButtonText}>{label}</Text>
+      {showArrow ? <Text style={styles.primaryButtonText}>→</Text> : null}
     </Pressable>
   );
 }
@@ -84,6 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    alignItems: 'center',
     backgroundColor: colors.primary,
     paddingBottom: 16,
     paddingHorizontal: 20,
@@ -92,18 +101,23 @@ const styles = StyleSheet.create({
     color: colors.onPrimary,
     fontSize: 20,
     fontWeight: '600',
+    textAlign: 'center',
   },
   body: {
+    alignItems: 'center',
     flex: 1,
     gap: 12,
+    justifyContent: 'center',
     padding: 20,
   },
   field: {
+    alignSelf: 'stretch',
     gap: 6,
   },
   label: {
     color: colors.text,
     fontSize: 14,
+    textAlign: 'center',
   },
   input: {
     borderColor: colors.primary,
@@ -116,22 +130,33 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     alignItems: 'center',
+    alignSelf: 'stretch',
     backgroundColor: colors.primary,
-    borderRadius: 8,
+    borderColor: colors.gold,
+    borderRadius: 30,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
     marginTop: 8,
-    paddingVertical: 12,
+    paddingVertical: 16,
+  },
+  primaryButtonDisabled: {
+    opacity: 0.6,
   },
   primaryButtonText: {
     color: colors.onPrimary,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
   },
   link: {
     color: colors.primary,
     fontSize: 15,
+    textAlign: 'center',
   },
   error: {
     color: '#9B1C1C',
     fontSize: 14,
+    textAlign: 'center',
   },
 });

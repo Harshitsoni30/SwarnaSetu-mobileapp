@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
-import { ErrorText, Field, PrimaryButton, Screen, TextLink } from '../components/Screen';
+import lockIcon from '../assets/icons/lock.svg';
+import { AuthField, AuthFrame, AuthLink } from '../components/AuthFrame';
+import { ErrorText, PrimaryButton } from '../components/Screen';
 import { colors } from '../theme';
 
 type ResetPasswordScreenProps = {
@@ -37,27 +39,30 @@ export function ResetPasswordScreen({
   }
 
   return (
-    <Screen title="Reset password" topInset={topInset}>
-      <Text style={styles.account}>{identifier}</Text>
-      <Field label="Reset code" onChangeText={setOtp} value={otp} />
-      <Field label="Current password" onChangeText={setOldPassword} secureTextEntry value={oldPassword} />
-      <Field label="New password" onChangeText={setNewPassword} secureTextEntry value={newPassword} />
-      <Field
+    <AuthFrame subtitle="Verify  •  Calculate  •  Manage  •  Grow" title="Reset password" topInset={topInset}>
+      {identifier ? <Text style={styles.account}>{identifier}</Text> : null}
+      <AuthField icon={lockIcon} label="Reset code" onChangeText={setOtp} value={otp} />
+      <AuthField icon={lockIcon} label="Current password" onChangeText={setOldPassword} secureTextEntry value={oldPassword} />
+      <AuthField icon={lockIcon} label="New password" onChangeText={setNewPassword} secureTextEntry value={newPassword} />
+      <AuthField
+        icon={lockIcon}
         label="Confirm new password"
         onChangeText={setConfirmPassword}
         secureTextEntry
         value={confirmPassword}
       />
       <ErrorText message={localError ?? errorMessage} />
-      <PrimaryButton disabled={submitting} label="Update password" onPress={submit} />
-      <TextLink label="Back to sign in" onPress={onLogin} />
-    </Screen>
+      <PrimaryButton disabled={submitting} label="Update password" onPress={submit} showArrow />
+      <AuthLink label="Back to sign in" onPress={onLogin} />
+    </AuthFrame>
   );
 }
 
 const styles = StyleSheet.create({
   account: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 15,
+    marginBottom: 12,
+    textAlign: 'center',
   },
 });

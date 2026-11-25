@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import { StyleSheet, Text, Pressable } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { ErrorText, Field, PrimaryButton, Screen, TextLink } from '../components/Screen';
+import eyeIcon from '../assets/icons/eye.svg';
+import lockIcon from '../assets/icons/lock.svg';
+import personIcon from '../assets/icons/person.svg';
+import phoneIcon from '../assets/icons/phone.svg';
+import { AuthField, AuthFrame } from '../components/AuthFrame';
+import { imageSource } from '../components/imageSource';
+import { ErrorText, PrimaryButton } from '../components/Screen';
 import { colors } from '../theme';
 
 type LoginScreenProps = {
@@ -11,7 +17,8 @@ type LoginScreenProps = {
   onSubmit: (identifier: string, password: string) => void;
   onRegister: () => void;
   onForgot: () => void;
-  onGoogle: () => void;
+  onGoogle?: () => void;
+  onOtp?: (identifier: string) => void;
 };
 
 export function LoginScreen({
@@ -21,41 +28,114 @@ export function LoginScreen({
   onSubmit,
   onRegister,
   onForgot,
-  onGoogle,
+  onOtp,
 }: LoginScreenProps) {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Screen title="Sign in" topInset={topInset}>
-      <Field label="Email or phone" onChangeText={setIdentifier} value={identifier} />
-      <Field label="Password" onChangeText={setPassword} secureTextEntry value={password} />
-      <ErrorText message={errorMessage} />
-      <PrimaryButton
-        disabled={submitting}
-        label="Sign in"
-        onPress={() => onSubmit(identifier, password)}
+    <AuthFrame
+      subtitle="Verify  •  Calculate  •  Manage  •  Grow"
+      title="Welcome"
+      topInset={topInset}>
+      <AuthField
+        icon={personIcon}
+        label="Mobile Number or Email"
+        onChangeText={setIdentifier}
+        value={identifier}
       />
-      <Pressable accessibilityRole="button" onPress={onGoogle} style={styles.googleButton} testID="google-sign-in">
-        <Text style={styles.googleButtonText}>Continue with Google</Text>
+      <AuthField
+        icon={lockIcon}
+        label="Password"
+        onChangeText={setPassword}
+        secureTextEntry={!showPassword}
+        trailing={
+          <Pressable accessibilityLabel="Show password" onPress={() => setShowPassword(value => !value)}>
+            <Image source={imageSource(eyeIcon)} style={styles.icon} />
+          </Pressable>
+        }
+        value={password}
+      />
+      <Pressable accessibilityRole="button" onPress={onForgot} style={styles.forgotWrap}>
+        <Text style={styles.forgot}>Forgot Password?</Text>
       </Pressable>
-      <TextLink label="Create an account" onPress={onRegister} />
-      <TextLink label="Forgot password" onPress={onForgot} />
-    </Screen>
+      <ErrorText message={errorMessage} />
+      <PrimaryButton disabled={submitting} label="Login" onPress={() => onSubmit(identifier, password)} showArrow />
+      <View style={styles.divider}>
+        <View style={styles.dividerLine} />
+        <Text style={styles.dividerText}>OR</Text>
+        <View style={styles.dividerLine} />
+      </View>
+      <Pressable accessibilityRole="button" onPress={() => onOtp?.(identifier)} style={styles.otpButton}>
+        <Image source={imageSource(phoneIcon)} style={styles.icon} />
+        <Text style={styles.otpText}>Continue with OTP</Text>
+      </Pressable>
+      <Text style={styles.accountLine}>
+        Don't have an account?{' '}
+        <Text onPress={onRegister} style={styles.registerNow}>
+          Register Now
+        </Text>
+      </Text>
+    </AuthFrame>
   );
 }
 
 const styles = StyleSheet.create({
-  googleButton: {
-    alignItems: 'center',
-    borderColor: colors.primary,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingVertical: 12,
+  icon: {
+    height: 20,
+    width: 20,
   },
-  googleButtonText: {
+  forgotWrap: {
+    alignSelf: 'flex-end',
+    marginBottom: 4,
+    marginTop: 2,
+  },
+  forgot: {
+    color: colors.gold,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  divider: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+    marginVertical: 16,
+  },
+  dividerLine: {
+    backgroundColor: colors.line,
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    color: '#8A8174',
+    fontSize: 12,
+    letterSpacing: 1,
+  },
+  otpButton: {
+    alignItems: 'center',
+    borderColor: colors.gold,
+    borderRadius: 30,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    paddingVertical: 14,
+  },
+  otpText: {
     color: colors.primary,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  accountLine: {
+    color: colors.text,
+    fontSize: 14,
+    marginTop: 18,
+    textAlign: 'center',
+  },
+  registerNow: {
+    color: colors.gold,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
 });

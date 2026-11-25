@@ -4,18 +4,22 @@ import {
   forgotPassword,
   login,
   loginWithGoogle,
+  loginWithOtp,
   registerAccount,
+  requestLoginOtp,
   resetPassword,
   type TokenPair,
 } from '../api/auth';
 import { requestGoogleIdToken } from './google';
 import { HomeScreen } from '../screens/HomeScreen';
+import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { ForgotPasswordScreen } from '../screens/ForgotPasswordScreen';
 import { LoginScreen } from '../screens/LoginScreen';
+import { OtpLoginScreen } from '../screens/OtpLoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { ResetPasswordScreen } from '../screens/ResetPasswordScreen';
 
-type ScreenName = 'login' | 'register' | 'forgot' | 'reset' | 'home';
+type ScreenName = 'welcome' | 'login' | 'register' | 'forgot' | 'reset' | 'otp' | 'home';
 
 type AuthFlowProps = {
   topInset: number;
@@ -26,6 +30,8 @@ export function AuthFlow({ topInset }: AuthFlowProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [resetIdentifier, setResetIdentifier] = useState('');
+  const [otpIdentifier, setOtpIdentifier] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
   const [tokens, setTokens] = useState<TokenPair | null>(null);
 
   function show(next: ScreenName) {
@@ -67,10 +73,11 @@ export function AuthFlow({ topInset }: AuthFlowProps) {
       <RegisterScreen
         errorMessage={errorMessage}
         onLogin={() => show('login')}
-        onSubmit={(email, phone, password) => {
+        onSubmit={(name, email, phone, password) => {
           run(async () => {
             enter(
               await registerAccount({
+                name,
                 email: blankToNull(email),
                 phone: blankToNull(phone),
                 password,
@@ -125,10 +132,50 @@ export function AuthFlow({ topInset }: AuthFlowProps) {
     );
   }
 
+  if (screen === 'otp') {
+    return (
+      <OtpLoginScreen
+        codeSent={codeSent}
+        errorMessage={errorMessage}
+        initialIdentifier={otpIdentifier}
+        onBack={() => show('login')}
+        onRequest={identifier => {
+          run(async () => {
+            await requestLoginOtp(identifier.trim());
+            setOtpIdentifier(identifier.trim());
+            setCodeSent(true);
+          });
+        }}
+        onSubmit={otp => {
+          run(async () => {
+            enter(await loginWithOtp(otpIdentifier, otp));
+          });
+        }}
+        submitting={submitting}
+        topInset={topInset}
+      />
+    );
+  }
+
+  if (screen === 'welcome') {
+    return (
+      <WelcomeScreen
+        onLogin={() => show('login')}
+        onRegister={() => show('register')}
+        topInset={topInset}
+      />
+    );
+  }
+
   return (
     <LoginScreen
       errorMessage={errorMessage}
       onForgot={() => show('forgot')}
+      onOtp={identifier => {
+        setOtpIdentifier(identifier.trim());
+        setCodeSent(false);
+        show('otp');
+      }}
       onGoogle={() => {
         run(async () => {
           const idToken = await requestGoogleIdToken();
