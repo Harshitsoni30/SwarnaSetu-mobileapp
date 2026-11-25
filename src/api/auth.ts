@@ -7,6 +7,7 @@ export type TokenPair = {
 };
 
 export function registerAccount(input: {
+  name: string;
   email: string | null;
   phone: string | null;
   password: string;
@@ -33,4 +34,12 @@ export function resetPassword(input: {
 
 export function loginWithGoogle(idToken: string): Promise<TokenPair> {
   return postJson<TokenPair>('/auth/google', { id_token: idToken });
+}
+
+export function requestLoginOtp(identifier: string): Promise<{ message: string }> {
+  return postJson('/auth/otp/request', { identifier });
+}
+
+export function loginWithOtp(identifier: string, otp: string): Promise<TokenPair> {
+  return postJson<TokenPair>('/auth/otp/login', { identifier, otp });
 }

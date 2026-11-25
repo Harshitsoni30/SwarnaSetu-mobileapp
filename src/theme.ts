@@ -1,6 +1,8 @@
 export const colors = {
-  background: '#FFFFFF',
-  primary: '#1565C0',
-  onPrimary: '#FFFFFF',
-  text: '#0D2744',
+  background: '#FBF6EC',
+  primary: '#12382C',
+  onPrimary: '#E4C56A',
+  text: '#16362C',
+  gold: '#C6A15A',
+  line: '#E6D5B8',
 } as const;

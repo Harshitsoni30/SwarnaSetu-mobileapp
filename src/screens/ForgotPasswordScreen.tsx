@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { ErrorText, Field, PrimaryButton, Screen, TextLink } from '../components/Screen';
+import mailIcon from '../assets/icons/mail.svg';
+import { AuthField, AuthFrame, AuthLink } from '../components/AuthFrame';
+import { ErrorText, PrimaryButton } from '../components/Screen';
 
 type ForgotPasswordScreenProps = {
   topInset: number;
@@ -20,15 +22,16 @@ export function ForgotPasswordScreen({
   const [identifier, setIdentifier] = useState('');
 
   return (
-    <Screen title="Forgot password" topInset={topInset}>
-      <Field label="Email or phone" onChangeText={setIdentifier} value={identifier} />
-      <ErrorText message={errorMessage} />
-      <PrimaryButton
-        disabled={submitting}
-        label="Send code"
-        onPress={() => onSubmit(identifier)}
+    <AuthFrame subtitle="Verify  •  Calculate  •  Manage  •  Grow" title="Forgot password" topInset={topInset}>
+      <AuthField
+        icon={mailIcon}
+        label="Mobile Number or Email"
+        onChangeText={setIdentifier}
+        value={identifier}
       />
-      <TextLink label="Back to sign in" onPress={onLogin} />
-    </Screen>
+      <ErrorText message={errorMessage} />
+      <PrimaryButton disabled={submitting} label="Send code" onPress={() => onSubmit(identifier)} showArrow />
+      <AuthLink label="Back to sign in" onPress={onLogin} />
+    </AuthFrame>
   );
 }

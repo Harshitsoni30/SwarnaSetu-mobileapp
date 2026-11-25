@@ -11,7 +11,7 @@ import { LoginScreen } from '../src/screens/LoginScreen';
 import { HomeScreen } from '../src/screens/HomeScreen';
 import { colors } from '../src/theme';
 
-test('renders a white screen with a blue header', async () => {
+test('renders a cream screen with a green header', async () => {
   let renderer: ReactTestRenderer.ReactTestRenderer | undefined;
 
   await ReactTestRenderer.act(() => {
@@ -25,7 +25,7 @@ test('renders a white screen with a blue header', async () => {
   expect(StyleSheet.flatten(header?.props.style).backgroundColor).toBe(colors.primary);
 });
 
-test('renders a white login screen with a blue action', async () => {
+test('renders a cream login screen with the shared green action', async () => {
   let renderer: ReactTestRenderer.ReactTestRenderer | undefined;
 
   await ReactTestRenderer.act(() => {
