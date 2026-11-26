@@ -5,6 +5,7 @@ import { BottomTabs, type HomeTab } from '../components/BottomTabs';
 import { Screen, TextLink } from '../components/Screen';
 import { colors } from '../theme';
 import { CalculateScreen } from './CalculateScreen';
+import { GirviLoanScreen } from './GirviLoanScreen';
 
 type HomeScreenProps = {
   topInset: number;
@@ -20,7 +21,7 @@ export function HomeScreen({ topInset, onSignOut }: HomeScreenProps) {
         <View style={[styles.fill, tab === 'home' ? null : styles.hidden]}>
           <CalculateScreen topInset={topInset} />
         </View>
-        {tab === 'history' ? <BlankTab title="History" topInset={topInset} /> : null}
+        {tab === 'girvi' ? <GirviLoanScreen topInset={topInset} /> : null}
         {tab === 'settings' ? (
           <BlankTab title="Settings" topInset={topInset}>
             {onSignOut ? <TextLink label="Sign out" onPress={onSignOut} /> : null}
