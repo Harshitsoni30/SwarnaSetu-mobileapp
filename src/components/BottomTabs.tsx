@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../theme';
 
-export type HomeTab = 'home' | 'history' | 'settings';
+export type HomeTab = 'home' | 'girvi' | 'settings';
 
 type BottomTabsProps = {
   selected: HomeTab;
@@ -11,7 +11,7 @@ type BottomTabsProps = {
 
 const TABS: { id: HomeTab; label: string }[] = [
   { id: 'home', label: 'Home' },
-  { id: 'history', label: 'History' },
+  { id: 'girvi', label: 'Girvi' },
   { id: 'settings', label: 'Settings' },
 ];
 
@@ -41,8 +41,8 @@ function TabIcon({ name, color }: { name: HomeTab; color: string }) {
   if (name === 'home') {
     return <HomeIcon color={color} />;
   }
-  if (name === 'history') {
-    return <HistoryIcon color={color} />;
+  if (name === 'girvi') {
+    return <GirviIcon color={color} />;
   }
   return <SettingsIcon color={color} />;
 }
@@ -56,11 +56,10 @@ function HomeIcon({ color }: { color: string }) {
   );
 }
 
-function HistoryIcon({ color }: { color: string }) {
+function GirviIcon({ color }: { color: string }) {
   return (
-    <View style={[styles.clock, { borderColor: color }]}>
-      <View style={[styles.hand, { backgroundColor: color }]} />
-      <View style={[styles.minute, { backgroundColor: color }]} />
+    <View style={[styles.calc, { borderColor: color }]}>
+      <View style={[styles.calcBar, { backgroundColor: color }]} />
     </View>
   );
 }
@@ -119,23 +118,17 @@ const styles = StyleSheet.create({
     marginTop: -5,
     width: 14,
   },
-  clock: {
-    alignItems: 'center',
-    borderRadius: 11,
+  calc: {
+    borderRadius: 4,
     borderWidth: 2,
-    height: 22,
-    width: 22,
+    height: 20,
+    justifyContent: 'flex-end',
+    padding: 3,
+    width: 18,
   },
-  hand: {
-    height: 6,
-    marginTop: 4,
-    width: 2,
-  },
-  minute: {
+  calcBar: {
     height: 2,
-    marginLeft: 4,
-    marginTop: -2,
-    width: 5,
+    marginBottom: 2,
   },
   tooth: {
     height: 22,
